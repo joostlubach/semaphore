@@ -1,3 +1,5 @@
 {
-  "name": "semaphore"
+  "name": "semaphore",
+  "description": "General purpose semaphore",
+  "version": "1.0.0"
 }
