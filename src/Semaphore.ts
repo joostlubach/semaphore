@@ -44,21 +44,21 @@ export default class Semaphore {
   //------
   // Timeout
 
-  private timeout: number | null = null
+  private timeout: NodeJS.Timeout | null = null
 
   private setTimeout() {
     const delay = this.options.timeout
     if (delay == null) { return }
 
     this.clearTimeout()
-    this.timeout = window.setTimeout(() => {
+    this.timeout = setTimeout(() => {
       this.resolveWith('timeout')
     }, delay)
   }
 
   private clearTimeout() {
     if (this.timeout == null) { return }
-    window.clearTimeout(this.timeout)
+    clearTimeout(this.timeout)
     this.timeout = null
   }
 
