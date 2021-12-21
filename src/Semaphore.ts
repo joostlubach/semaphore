@@ -7,7 +7,7 @@ export interface Options {
 export default class Semaphore {
 
   constructor(
-    private readonly options: Options = {}
+    private readonly options: Options = {},
   ) {
     if (this.options.signalled) {
       this.status = 'signalled'
