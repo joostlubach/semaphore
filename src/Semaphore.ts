@@ -4,7 +4,7 @@ export interface Options {
   timeout?:   number
 }
 
-export default class Semaphore {
+export default class Semaphore implements PromiseLike<SemaphoreResult> {
 
   constructor(
     private readonly options: Options = {},
@@ -29,7 +29,7 @@ export default class Semaphore {
     this.resolveWith('ok')
   }
 
-  private resolveWith(result: 'ok' | 'timeout') {
+  private resolveWith(result: SemaphoreResult) {
     this.status   = result === 'ok' ? 'signalled' : 'timeout'
 
     this.resolves.forEach(it => it(result))
@@ -65,16 +65,29 @@ export default class Semaphore {
   //------
   // Promise interface
 
-  public then(resolve: SemaphoreResolve) {
+  public then<
+    TResult1 = SemaphoreResult,
+    TResult2 = never
+  >(onfulfilled?: ((value: SemaphoreResult) => TResult1 | PromiseLike<TResult1>) | undefined | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null,
+  ): PromiseLike<TResult1 | TResult2> {
     if (this.status !== 'pending') {
-      resolve(this.status === 'signalled' ? 'ok' : 'timeout')
+      const result: SemaphoreResult = this.status === 'signalled' ? 'ok' : 'timeout'
+      onfulfilled?.(result)
+      return Promise.resolve<TResult1>(result as any) // Weirdness in TS
     } else {
-      this.resolves.push(resolve)
+      return new Promise<TResult1>(resolve => {
+        this.resolves.push(resolve as any) // Weirdness in TS
+        if (onfulfilled != null) {
+          this.resolves.push(onfulfilled)
+        }
+      })
     }
   }
 
 }
 
-export type SemaphoreStatus = 'pending' | 'signalled' | 'timeout'
-export type SemaphoreResolve = (result: 'ok' | 'timeout') => any
+export type SemaphoreStatus  = 'pending' | 'signalled' | 'timeout'
+export type SemaphoreResolve = (result: SemaphoreResult) => any
+export type SemaphoreResult  = 'ok' | 'timeout'
 export class SemaphoreTimeout extends Error {}
