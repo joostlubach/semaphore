@@ -1,1 +1,1 @@
-export {default} from './Semaphore'
+export { default } from './Semaphore'
