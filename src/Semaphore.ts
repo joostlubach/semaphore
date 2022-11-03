@@ -69,8 +69,8 @@ export default class Semaphore implements PromiseLike<SemaphoreResult> {
     TResult1 = SemaphoreResult,
     TResult2 = never
   >(
-    onfulfilled?: ((value: SemaphoreResult) => TResult1 | PromiseLike<TResult1>) | undefined | null,
-  ): PromiseLike<TResult1 | TResult2> {
+    onfulfilled?: ((value: SemaphoreResult) => TResult1 | Promise<TResult1>) | undefined | null,
+  ): Promise<TResult1 | TResult2> {
     if (this.status !== 'pending') {
       const result: SemaphoreResult = this.status === 'signalled' ? 'ok' : 'timeout'
       onfulfilled?.(result)
