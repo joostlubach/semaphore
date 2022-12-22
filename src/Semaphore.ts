@@ -20,6 +20,10 @@ export default class Semaphore implements PromiseLike<SemaphoreResult> {
   private status: SemaphoreStatus
   private resolves: SemaphoreResolve[] = []
 
+  public get isSignalled() {
+    return this.status === 'signalled'
+  }
+
   public reset() {
     this.status = 'pending'
     this.setTimeout()
