@@ -1,97 +1,33 @@
-export interface Options {
-  signalled?: boolean
-  autoReset?: boolean
-  timeout?:   number
-}
+import { SemaphoreOptions, SemaphoreResult } from './types'
+import ValuedSemaphore from './ValuedSemaphore'
 
-export default class Semaphore implements PromiseLike<SemaphoreResult> {
+export default class Semaphore implements PromiseLike<SemaphoreResult<never>> {
 
-  constructor(
-    private readonly options: Options = {},
-  ) {
-    if (this.options.signalled) {
-      this.status = 'signalled'
-    } else {
-      this.status = 'pending'
-      this.reset()
-    }
+  constructor(options: SemaphoreOptions<never> = {}) {
+    this.semaphore = new ValuedSemaphore(options)
   }
 
-  private status: SemaphoreStatus
-  private resolves: SemaphoreResolve[] = []
+  private semaphore: ValuedSemaphore<never>
 
   public get isSignalled() {
-    return this.status === 'signalled'
+    return this.semaphore.isSignalled
   }
 
   public reset() {
-    this.status = 'pending'
-    this.setTimeout()
+    this.semaphore.reset()
   }
 
   public signal() {
-    this.resolveWith('ok')
+    this.semaphore.signal(undefined as never)
   }
-
-  private resolveWith(result: SemaphoreResult) {
-    this.status   = result === 'ok' ? 'signalled' : 'timeout'
-
-    this.resolves.forEach(it => it(result))
-    this.resolves = []
-
-    this.clearTimeout()
-    if (this.options.autoReset) {
-      this.reset()
-    }
-  }
-
-  //------
-  // Timeout
-
-  private timeout: NodeJS.Timeout | null = null
-
-  private setTimeout() {
-    const delay = this.options.timeout
-    if (delay == null) { return }
-
-    this.clearTimeout()
-    this.timeout = setTimeout(() => {
-      this.resolveWith('timeout')
-    }, delay)
-  }
-
-  private clearTimeout() {
-    if (this.timeout == null) { return }
-    clearTimeout(this.timeout)
-    this.timeout = null
-  }
-
-  //------
-  // Promise interface
-
   public then<
-    TResult1 = SemaphoreResult,
+    TResult1 = SemaphoreResult<never>,
     TResult2 = never,
   >(
-    onfulfilled?: ((value: SemaphoreResult) => TResult1 | Promise<TResult1>) | undefined | null,
+    onfulfilled?: ((value: SemaphoreResult<never>) => TResult1 | Promise<TResult1>) | undefined | null,
+    onrejected?: ((reason: any) => TResult2 | Promise<TResult2>) | undefined | null,
   ): Promise<TResult1 | TResult2> {
-    if (this.status !== 'pending') {
-      const result: SemaphoreResult = this.status === 'signalled' ? 'ok' : 'timeout'
-      onfulfilled?.(result)
-      return Promise.resolve<TResult1>(result as any) // Weirdness in TS
-    } else {
-      return new Promise<TResult1>(resolve => {
-        this.resolves.push(resolve as any) // Weirdness in TS
-        if (onfulfilled != null) {
-          this.resolves.push(onfulfilled)
-        }
-      })
-    }
+    return this.semaphore.then(onfulfilled, onrejected)
   }
 
 }
-
-export type SemaphoreStatus  = 'pending' | 'signalled' | 'timeout'
-export type SemaphoreResolve = (result: SemaphoreResult) => any
-export type SemaphoreResult  = 'ok' | 'timeout'
-export class SemaphoreTimeout extends Error {}
