@@ -2,8 +2,8 @@
   "name": "semaphore",
   "description": "General purpose semaphore",
   "version": "1.0.0",
-  "license": "ISC",
-  "author": "Joost Lubach",
+  "author": "Joost Lubach <joostlubach@gmail.com>",
+  "private": true,
   "scripts": {
     "build": "(pnpm build:prepare && pnpm build:tsc && pnpm build:tsc-alias && pnpm build:copy && pnpm build:rsync); pnpm build:cleanup",
     "build:prepare": "test -x .build && rm -rf .build; mkdir -p .build",
