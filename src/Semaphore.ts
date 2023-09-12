@@ -13,13 +13,14 @@ export default class Semaphore implements PromiseLike<SemaphoreResult<never>> {
     return this.semaphore.isSignalled
   }
 
-  public reset() {
+  public reset = () => {
     this.semaphore.reset()
   }
 
-  public signal() {
+  public signal = () => {
     this.semaphore.signal(undefined as never)
   }
+
   public then<
     TResult1 = SemaphoreResult<never>,
     TResult2 = never,

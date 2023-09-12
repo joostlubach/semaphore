@@ -35,12 +35,12 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
     return this.status === 'signalled'
   }
 
-  public reset() {
+  public reset = () => {
     delete this.result
     this.setTimeout()
   }
 
-  public signal(value: T) {
+  public signal = (value: T) => {
     this.resolveWith(SemaphoreResult.signalled(value))
   }
 
