@@ -1,10 +1,16 @@
-import { SemaphoreOptions, SemaphoreResult } from './types'
+import { SemaphoreOptions, SemaphoreResult, ValuedSemaphoreOptions } from './types'
 import ValuedSemaphore from './ValuedSemaphore'
 
 export default class Semaphore implements PromiseLike<SemaphoreResult<never>> {
 
-  constructor(options: SemaphoreOptions<never> = {}) {
-    this.semaphore = new ValuedSemaphore(options)
+  constructor(options: SemaphoreOptions = {}) {
+    const {signalled = false, ...rest} = options
+    const valuedOptions: ValuedSemaphoreOptions<never> = rest
+    if (signalled) {
+      valuedOptions.signalledWith = {} as never
+    }
+
+    this.semaphore = new ValuedSemaphore(valuedOptions)
   }
 
   private semaphore: ValuedSemaphore<never>

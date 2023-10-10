@@ -1,9 +1,16 @@
 import SemaphoreTimeout from './SemaphoreTimeout'
 
-export interface SemaphoreOptions<T> {
-  resolved?:  T
+interface CommonSemaphoreOptions {
   autoReset?: boolean
   timeout?:   number
+}
+
+export interface SemaphoreOptions extends CommonSemaphoreOptions {
+  signalled?: boolean
+}
+
+export interface ValuedSemaphoreOptions<T> extends CommonSemaphoreOptions {
+  signalledWith?:  T
 }
 
 export type SemaphoreStatus  = 'pending' | 'signalled' | 'timeout'

@@ -1,21 +1,21 @@
 import SemaphoreTimeout from './SemaphoreTimeout'
 import {
-  SemaphoreOptions,
   SemaphoreReject,
   SemaphoreResolve,
   SemaphoreResult,
   SemaphoreStatus,
+  ValuedSemaphoreOptions,
 } from './types'
 
 export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
 
   constructor(
-    private readonly options: SemaphoreOptions<T> = {},
+    private readonly options: ValuedSemaphoreOptions<T> = {},
   ) {
-    if (this.options.resolved != null) {
+    if (this.options.signalledWith != null) {
       this.result = {
         status: 'signalled',
-        value:  this.options.resolved,
+        value:  this.options.signalledWith,
       }
     } else {
       this.reset()
@@ -36,7 +36,7 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
   }
 
   public reset = () => {
-    delete this.result
+    this.result = undefined
     this.setTimeout()
   }
 
