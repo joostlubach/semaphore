@@ -15,6 +15,10 @@ export default class Semaphore implements PromiseLike<SemaphoreResult<never>> {
 
   private semaphore: ValuedSemaphore<never>
 
+  public dispose() {
+    this.semaphore.dispose()
+  }
+
   public get isSignalled() {
     return this.semaphore.isSignalled
   }

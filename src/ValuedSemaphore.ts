@@ -1,3 +1,4 @@
+import DisposableTimer from 'disposable-timer'
 import SemaphoreTimeout from './SemaphoreTimeout'
 import {
   SemaphoreReject,
@@ -20,6 +21,12 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
     } else {
       this.reset()
     }
+  }
+
+  private timer = new DisposableTimer()
+
+  public dispose() {
+    this.timer.dispose()
   }
 
   private result?: SemaphoreResult<T>
@@ -71,7 +78,7 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
     if (delay == null) { return }
 
     this.clearTimeout()
-    this.timeout = setTimeout(() => {
+    this.timer.setTimeout(() => {
       this.resolveWith(SemaphoreResult.timeout())
     }, delay)
   }

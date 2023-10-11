@@ -34,6 +34,7 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "disposable-timer": "workspace:^",
     "ytil": "workspace:^"
   }
 }
