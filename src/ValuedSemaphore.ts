@@ -85,7 +85,7 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
 
   private clearTimeout() {
     if (this.timeout == null) { return }
-    clearTimeout(this.timeout)
+    this.timer.clearTimeout(this.timeout)
     this.timeout = null
   }
 
