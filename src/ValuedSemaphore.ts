@@ -29,9 +29,9 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
     this.timer.dispose()
   }
 
-  private result?: SemaphoreResult<T>
+  private result?:  SemaphoreResult<T>
   private resolves: SemaphoreResolve<T>[] = []
-  private rejects: SemaphoreReject[] = []
+  private rejects:  SemaphoreReject[] = []
 
   private get status(): SemaphoreStatus {
     if (this.result == null) { return 'pending' }
@@ -68,7 +68,7 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
     }
   }
 
-  //------
+  // ------
   // Timeout
 
   private timeout: NodeJS.Timeout | null = null
@@ -89,7 +89,7 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
     this.timeout = null
   }
 
-  //------
+  // ------
   // Promise interface
 
   public async then<
@@ -143,4 +143,3 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
   }
 
 }
-

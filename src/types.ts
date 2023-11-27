@@ -10,13 +10,13 @@ export interface SemaphoreOptions extends CommonSemaphoreOptions {
 }
 
 export interface ValuedSemaphoreOptions<T> extends CommonSemaphoreOptions {
-  signalledWith?:  T
+  signalledWith?: T
 }
 
-export type SemaphoreStatus  = 'pending' | 'signalled' | 'timeout'
+export type SemaphoreStatus = 'pending' | 'signalled' | 'timeout'
 
 export type SemaphoreResolve<T> = (result: T) => any
-export type SemaphoreReject     = (reason: SemaphoreTimeout) => any
+export type SemaphoreReject = (reason: SemaphoreTimeout) => any
 
 export type SemaphoreResult<T> =
   | {status: 'signalled', value: T}
