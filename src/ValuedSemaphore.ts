@@ -49,10 +49,14 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
   }
 
   public signal = (value: T) => {
-    this.resolveWith(SemaphoreResult.signalled(value))
+    this.completeWith(SemaphoreResult.signalled(value))
   }
 
-  private resolveWith(result: SemaphoreResult<T>) {
+  public reject = (reason: any) => {
+    this.completeWith(SemaphoreResult.error(reason))
+  }
+
+  private completeWith(result: SemaphoreResult<T>) {
     this.result = result
 
     if (result.status === 'signalled') {
@@ -80,7 +84,7 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
 
     this.clearTimeout()
     this.timer.setTimeout(() => {
-      this.resolveWith(SemaphoreResult.timeout())
+      this.completeWith(SemaphoreResult.timeout())
     }, delay)
   }
 

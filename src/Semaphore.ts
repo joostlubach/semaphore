@@ -31,6 +31,10 @@ export default class Semaphore implements PromiseLike<SemaphoreResult<never>> {
     this.semaphore.signal(undefined as never)
   }
 
+  public reject = (reason: any) => {
+    this.semaphore.reject(reason)
+  }
+
   public then<
     TResult1 = SemaphoreResult<never>,
     TResult2 = never,
