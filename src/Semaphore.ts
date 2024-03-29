@@ -1,5 +1,5 @@
-import { SemaphoreOptions, SemaphoreResult, ValuedSemaphoreOptions } from './types'
-import ValuedSemaphore from './ValuedSemaphore'
+import ValuedSemaphore from './ValuedSemaphore.js'
+import { SemaphoreOptions, SemaphoreResult, ValuedSemaphoreOptions } from './types.js'
 
 export default class Semaphore implements PromiseLike<SemaphoreResult<never>> {
 
