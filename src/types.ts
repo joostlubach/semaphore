@@ -1,4 +1,4 @@
-import SemaphoreTimeout from './SemaphoreTimeout'
+import SemaphoreTimeout from './SemaphoreTimeout.js'
 
 interface CommonSemaphoreOptions {
   autoReset?: boolean
