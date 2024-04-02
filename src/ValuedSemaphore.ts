@@ -1,13 +1,13 @@
 import { DisposableTimer } from 'disposable-timer'
 
-import SemaphoreTimeout from './SemaphoreTimeout.js'
+import SemaphoreTimeout from './SemaphoreTimeout'
 import {
   SemaphoreReject,
   SemaphoreResolve,
   SemaphoreResult,
   SemaphoreStatus,
   ValuedSemaphoreOptions,
-} from './types.js'
+} from './types'
 
 export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
 
