@@ -14,15 +14,9 @@
     "check": "tsc -p . --noEmit",
     "test": "NODE_ENV=test jest"
   },
-  "main": "./dist/cjs/index.js",
-  "module": "./dist/esm/index.js",
-  "types": "./dist/types/index.d.ts",
+  "main": "./src/index.ts",
   "exports": {
-    ".": {
-      "types": "./dist/types/index.d.ts",
-      "import": "./dist/esm/index.js",
-      "default": "./dist/cjs/index.js"
-    }
+    ".": "./src/index.ts"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",
@@ -31,7 +25,7 @@
     "typescript": "5.4.3"
   },
   "dependencies": {
-    "disposable-timer": "workspace:^",
-    "ytil": "workspace:^"
+    "disposable-timer": "workspace:*",
+    "ytil": "workspace:*"
   }
 }
