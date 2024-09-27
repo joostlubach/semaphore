@@ -4,15 +4,15 @@
   "version": "1.0.0",
   "author": "Joost Lubach <joostlubach@gmail.com>",
   "private": true,
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "check": "tsc -p . --noEmit",
     "lint": "eslint src --ext ts,tsx",
     "test": "NODE_ENV=test DATA_ENV=test jest"
 },
-  "main": "./src/index.ts",
-  "exports": {
-    ".": "./src/index.ts"
-  },
   "devDependencies": {
     "copyfiles": "^2.4.1",
     "rimraf": "^5.0.5",
