@@ -15,8 +15,8 @@ export interface ValuedSemaphoreOptions<T> extends CommonSemaphoreOptions {
 
 export type SemaphoreStatus = 'pending' | 'signalled' | 'error' | 'timeout'
 
-export type SemaphoreResolve<T> = (result: T) => any
-export type SemaphoreReject = (reason: SemaphoreTimeout) => any
+export type SemaphoreResolve<T> = (result: T) => void
+export type SemaphoreReject = (reason: SemaphoreTimeout) => void
 
 export type SemaphoreResult<T> =
   | {status: 'signalled', value: T}
