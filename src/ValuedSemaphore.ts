@@ -1,6 +1,5 @@
 import DisposableTimer from 'disposable-timer'
 
-import SemaphoreTimeout from './SemaphoreTimeout'
 import {
   SemaphoreReject,
   SemaphoreResolve,
@@ -62,7 +61,7 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
     if (result.status === 'signalled') {
       this.resolves.forEach(it => it(result.value))
     } else {
-      this.rejects.forEach(it => it(new SemaphoreTimeout()))
+      this.rejects.forEach(it => it(result.reason))
     }
     this.resolves = []
     this.rejects = []
@@ -76,14 +75,14 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
   // ------
   // Timeout
 
-  private timeout: NodeJS.Timeout | null = null
+  private timeout: ReturnType<DisposableTimer['setTimeout']> = null
 
   private setTimeout() {
     const delay = this.options.timeout
     if (delay == null) { return }
 
     this.clearTimeout()
-    this.timer.setTimeout(() => {
+    this.timeout = this.timer.setTimeout(() => {
       this.completeWith(SemaphoreResult.timeout())
     }, delay)
   }
@@ -97,54 +96,27 @@ export default class ValuedSemaphore<T = never> implements PromiseLike<T> {
   // ------
   // Promise interface
 
-  public async then<
+  public then<
     TResult1 = T,
-    TResult2 = any,
+    TResult2 = never,
   >(
-    onfulfilled?: ((value: T) => TResult1 | Promise<TResult1>) | undefined | null,
-    onrejected?: ((reason: any) => TResult2 | Promise<TResult2>) | undefined | null,
+    onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2> {
-    if (this.result == null) {
-      return new Promise<TResult1 | TResult2>((resolve, reject) => {
-        if (onfulfilled != null) {
-          this.resolves.push(async result => {
-            try {
-              const value = await onfulfilled(result)
-              resolve(value)
-            } catch (reason) {
-              reject(reason)
-            }
-          })
-        }
+    return this.toPromise().then(onfulfilled, onrejected)
+  }
 
-        if (onrejected != null) {
-          this.rejects.push(async reason => {
-            try {
-              const value = await onrejected(reason)
-              resolve(value)
-            } catch (reason) {
-              reject(reason)
-            }
-          })
-        }
-      })
-    } else if (this.result.status === 'signalled' && onfulfilled != null) {
-      try {
-        const next = await onfulfilled(this.result.value)
-        return Promise.resolve<TResult1>(next)
-      } catch (reason) {
-        return Promise.reject(reason)
+  private toPromise(): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      if (this.result == null) {
+        this.resolves.push(resolve)
+        this.rejects.push(reject)
+      } else if (this.result.status === 'signalled') {
+        resolve(this.result.value)
+      } else {
+        reject(this.result.reason)
       }
-    } else if (this.result.status === 'timeout' && onrejected != null) {
-      try {
-        const next = await onrejected(this.result.reason)
-        return Promise.resolve<TResult2>(next)
-      } catch (reason) {
-        return Promise.reject(reason)
-      }
-    } else {
-      return new Promise<TResult1 | TResult2>(() => undefined) // Never gonna happen.
-    }
+    })
   }
 
 }

@@ -39,8 +39,8 @@ export default class Semaphore implements PromiseLike<SemaphoreResult<never>> {
     TResult1 = SemaphoreResult<never>,
     TResult2 = never,
   >(
-    onfulfilled?: ((value: SemaphoreResult<never>) => TResult1 | Promise<TResult1>) | undefined | null,
-    onrejected?: ((reason: any) => TResult2 | Promise<TResult2>) | undefined | null,
+    onfulfilled?: ((value: SemaphoreResult<never>) => TResult1 | PromiseLike<TResult1>) | null,
+    onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | null,
   ): Promise<TResult1 | TResult2> {
     return this.semaphore.then(onfulfilled, onrejected)
   }
