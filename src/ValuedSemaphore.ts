@@ -1,4 +1,4 @@
-import DisposableTimer from 'disposable-timer'
+import DisposableTimer from '@mosdev/disposable-timer'
 
 import {
   SemaphoreReject,

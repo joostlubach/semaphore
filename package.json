@@ -1,5 +1,5 @@
 {
-  "name": "semaphore",
+  "name": "@mosdev/semaphore",
   "description": "General purpose semaphore",
   "version": "1.0.0",
   "author": "Joost Lubach <joostlubach@gmail.com>",
@@ -42,8 +42,8 @@
     "yaml": "^2.8.2"
   },
   "dependencies": {
-    "disposable-timer": "workspace:^",
+    "@mosdev/disposable-timer": "workspace:^",
     "lodash": "^4.17.21",
-    "ytil": "workspace:^"
+    "@mosdev/ytil": "workspace:^"
   }
 }
